@@ -1,0 +1,11 @@
+{
+  "name": "msu-snd-rotc-docs",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "start": "npm start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
