@@ -3,15 +3,19 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
 // Define storage base path
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
+// Use /tmp in serverless environments (Vercel)
+const UPLOADS_DIR = process.env.VERCEL 
+    ? path.join(os.tmpdir(), 'uploads') 
+    : path.join(__dirname, 'uploads');
 
 // Ensure directory structure exists
 const sections = [
@@ -24,15 +28,23 @@ const sections = [
 ];
 const types = ['incoming', 'outgoing'];
 
-sections.forEach(section => {
-    types.forEach(type => {
-        const dirPath = path.join(UPLOADS_DIR, section, type);
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath, { recursive: true });
-            console.log(`Created directory: ${dirPath}`);
-        }
+// Only create directories if not in serverless environment or if possible
+try {
+    if (!fs.existsSync(UPLOADS_DIR)) {
+        fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+    sections.forEach(section => {
+        types.forEach(type => {
+            const dirPath = path.join(UPLOADS_DIR, section, type);
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, { recursive: true });
+                console.log(`Created directory: ${dirPath}`);
+            }
+        });
     });
-});
+} catch (error) {
+    console.warn("Could not create directories (likely ephemeral filesystem):", error.message);
+}
 
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
@@ -41,7 +53,17 @@ const storage = multer.diskStorage({
         if (!sections.includes(section) || !types.includes(type)) {
             return cb(new Error('Invalid section or type'));
         }
+        
+        // Ensure directory exists right before upload (for /tmp cleanup)
         const dest = path.join(UPLOADS_DIR, section, type);
+        if (!fs.existsSync(dest)) {
+             try {
+                fs.mkdirSync(dest, { recursive: true });
+             } catch (e) {
+                return cb(new Error('Could not create upload directory'));
+             }
+        }
+        
         cb(null, dest);
     },
     filename: function (req, file, cb) {
@@ -112,6 +134,11 @@ app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// For Vercel, we need to export the app
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

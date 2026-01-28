@@ -5,6 +5,11 @@
     "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
     "start": "npm start --prefix server"
   },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  },
   "devDependencies": {
     "concurrently": "^8.0.0"
   }
