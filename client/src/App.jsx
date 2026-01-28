@@ -33,7 +33,24 @@ function App() {
   const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
   const [activeType, setActiveType] = useState(TYPES[0].id);
   const [files, setFiles] = useState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile && !isSidebarOpen) setIsSidebarOpen(true);
+      if (mobile && isSidebarOpen) setIsSidebarOpen(false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -84,46 +101,46 @@ function App() {
   const activeSectionName = SECTIONS.find(s => s.id === activeSection)?.name;
 
   const renderDashboard = () => (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Mission Card */}
-      <div className="bg-gradient-to-br from-white to-emerald-50 rounded-xl shadow-md p-6 border-t-4 border-emerald-600 hover:shadow-xl transition-all relative overflow-hidden group border-x border-b border-emerald-100/50">
+      <div className="bg-gradient-to-br from-emerald-50 to-white rounded-xl shadow-[0_4px_20px_-4px_rgba(16,185,129,0.1)] p-6 border-t-4 border-emerald-600 hover:shadow-[0_8px_30px_-4px_rgba(16,185,129,0.2)] transition-all relative overflow-hidden group border-x border-b border-emerald-100">
         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
           <Target className="w-32 h-32 text-emerald-900" />
         </div>
         <div className="flex items-center mb-4 relative z-10">
-          <div className="p-3 bg-emerald-600 shadow-lg shadow-emerald-200 rounded-lg mr-4 text-white transform group-hover:rotate-6 transition-transform">
+          <div className="p-3 bg-gradient-to-br from-emerald-600 to-emerald-700 shadow-lg shadow-emerald-500/30 rounded-lg mr-4 text-white transform group-hover:rotate-6 transition-transform">
             <Target className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-black text-emerald-900 tracking-wider">MISSION</h3>
         </div>
-        <p className="text-emerald-800/80 leading-relaxed relative z-10 text-sm font-semibold">
+        <p className="text-emerald-900/70 leading-relaxed relative z-10 text-sm font-semibold">
           To train and develop college students to be responsible citizens and officers of the armed forces, imbued with the values of honor, patriotism, and duty.
         </p>
       </div>
 
       {/* Vision Card */}
-      <div className="bg-gradient-to-br from-white to-amber-50 rounded-xl shadow-md p-6 border-t-4 border-amber-500 hover:shadow-xl transition-all relative overflow-hidden group border-x border-b border-amber-100/50">
+      <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl shadow-[0_4px_20px_-4px_rgba(245,158,11,0.1)] p-6 border-t-4 border-amber-500 hover:shadow-[0_8px_30px_-4px_rgba(245,158,11,0.2)] transition-all relative overflow-hidden group border-x border-b border-amber-100">
         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
           <Award className="w-32 h-32 text-amber-900" />
         </div>
         <div className="flex items-center mb-4 relative z-10">
-          <div className="p-3 bg-amber-500 shadow-lg shadow-amber-200 rounded-lg mr-4 text-white transform group-hover:-rotate-6 transition-transform">
+          <div className="p-3 bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/30 rounded-lg mr-4 text-white transform group-hover:-rotate-6 transition-transform">
             <Award className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-black text-amber-900 tracking-wider">VISION</h3>
         </div>
-        <p className="text-amber-900/80 leading-relaxed relative z-10 text-sm font-semibold">
+        <p className="text-amber-900/70 leading-relaxed relative z-10 text-sm font-semibold">
           A world-class leadership development program aimed at producing future leaders of the AFP and the nation, committed to excellence and service.
         </p>
       </div>
 
       {/* Core Values / Purpose Card */}
-      <div className="bg-gradient-to-br from-white to-slate-100 rounded-xl shadow-md p-6 border-t-4 border-slate-600 hover:shadow-xl transition-all relative overflow-hidden group border-x border-b border-slate-200/50">
+      <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-[0_4px_20px_-4px_rgba(71,85,105,0.1)] p-6 border-t-4 border-slate-600 hover:shadow-[0_8px_30px_-4px_rgba(71,85,105,0.2)] transition-all relative overflow-hidden group border-x border-b border-slate-200">
         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500">
           <Shield className="w-32 h-32 text-slate-900" />
         </div>
         <div className="flex items-center mb-4 relative z-10">
-          <div className="p-3 bg-slate-700 shadow-lg shadow-slate-300 rounded-lg mr-4 text-white transform group-hover:rotate-3 transition-transform">
+          <div className="p-3 bg-gradient-to-br from-slate-700 to-slate-800 shadow-lg shadow-slate-500/30 rounded-lg mr-4 text-white transform group-hover:rotate-3 transition-transform">
             <Shield className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-black text-slate-800 tracking-wider">CORE VALUES</h3>
@@ -146,20 +163,20 @@ function App() {
              <Target className="w-80 h-80 text-white" />
           </div>
           <div className="flex items-center justify-between mb-6 border-b border-slate-700 pb-4">
-             <h3 className="text-2xl font-black tracking-widest text-amber-500 uppercase">Unit Information</h3>
+             <h3 className="text-lg md:text-2xl font-black tracking-widest text-amber-500 uppercase">Unit Information</h3>
              <div className="px-3 py-1 bg-emerald-900/50 border border-emerald-500/30 rounded text-emerald-400 text-xs font-mono tracking-widest animate-pulse">
                SYSTEM ONLINE
              </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative z-10">
             <div className="group/item">
               <p className="text-slate-400 text-xs font-bold tracking-widest mb-2 uppercase group-hover/item:text-emerald-400 transition-colors">Unit Name</p>
-              <p className="text-3xl font-bold tracking-tight text-white group-hover/item:translate-x-1 transition-transform">MSU-SND ROTC UNIT</p>
+              <p className="text-2xl md:text-3xl font-bold tracking-tight text-white group-hover/item:translate-x-1 transition-transform">MSU-SND ROTC UNIT</p>
             </div>
             <div className="group/item">
               <p className="text-slate-400 text-xs font-bold tracking-widest mb-2 uppercase group-hover/item:text-emerald-400 transition-colors">Location</p>
-              <p className="text-3xl font-bold tracking-tight text-white group-hover/item:translate-x-1 transition-transform">Mindanao State University</p>
+              <p className="text-2xl md:text-3xl font-bold tracking-tight text-white group-hover/item:translate-x-1 transition-transform">Mindanao State University</p>
             </div>
             <div className="group/item">
               <p className="text-slate-400 text-xs font-bold tracking-widest mb-2 uppercase group-hover/item:text-emerald-400 transition-colors">Operational Status</p>
@@ -168,7 +185,7 @@ function App() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
                  </div>
-                 <p className="text-3xl font-bold tracking-tight text-emerald-400 shadow-emerald-500/20 drop-shadow-lg">ACTIVE</p>
+                 <p className="text-2xl md:text-3xl font-bold tracking-tight text-emerald-400 shadow-emerald-500/20 drop-shadow-lg">ACTIVE</p>
               </div>
             </div>
           </div>
@@ -178,20 +195,20 @@ function App() {
   );
 
   const renderFileManager = () => (
-    <div className="flex flex-col h-full px-6 pb-6">
+    <div className="flex flex-col h-full px-4 md:px-6 pb-6">
       {/* Tabs */}
-      <div className="flex space-x-2 mb-0">
+      <div className="flex space-x-2 mb-0 overflow-x-auto no-scrollbar pb-1 md:pb-0">
         {TYPES.map((type) => (
           <button
             key={type.id}
             onClick={() => setActiveType(type.id)}
-            className={`px-8 py-3 text-center font-bold text-xs focus:outline-none transition-all uppercase tracking-wider rounded-t-xl border-t border-l border-r relative overflow-hidden ${
+            className={`whitespace-nowrap px-6 md:px-8 py-3 text-center font-bold text-[10px] md:text-xs focus:outline-none transition-all uppercase tracking-wider rounded-t-xl border-t border-l border-r relative overflow-hidden flex-shrink-0 ${
               activeType === type.id
                 ? 'border-emerald-500 bg-white text-emerald-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-10'
                 : 'border-transparent bg-slate-200 text-slate-500 hover:bg-slate-300 hover:text-slate-700'
             }`}
           >
-            {activeType === type.id && <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>}
+            {activeType === type.id && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-400"></div>}
             {type.name}
           </button>
         ))}
@@ -199,18 +216,20 @@ function App() {
 
       <div className="bg-white rounded-b-xl rounded-tr-xl shadow-lg border border-slate-200 flex flex-col flex-1 relative overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
-          <div className="flex items-center space-x-3">
-             <div className="px-3 py-1.5 bg-slate-800 text-white rounded-md text-xs font-bold font-mono shadow-md">
+        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-r from-slate-50 to-white gap-4 sm:gap-0">
+          <div className="flex items-center space-x-3 w-full sm:w-auto">
+             <div className="px-3 py-1.5 bg-slate-800 text-white rounded-md text-xs font-bold font-mono shadow-md flex-shrink-0">
                {files.length} FILE{files.length !== 1 ? 'S' : ''}
              </div>
              <span className="text-slate-300">|</span>
-             <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center">
-               <Folder className="w-4 h-4 mr-1 text-amber-500" />
-               {activeSectionName} <ChevronRight className="w-3 h-3 mx-1 text-slate-300" /> {TYPES.find(t => t.id === activeType)?.name}
+             <span className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center truncate">
+               <Folder className="w-4 h-4 mr-1 text-amber-500 flex-shrink-0" />
+               <span className="truncate max-w-[150px] sm:max-w-none">{activeSectionName}</span>
+               <ChevronRight className="w-3 h-3 mx-1 text-slate-300 flex-shrink-0" /> 
+               <span className="truncate max-w-[100px] sm:max-w-none">{TYPES.find(t => t.id === activeType)?.name}</span>
              </span>
           </div>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <input
               type="file"
               onChange={handleFileUpload}
@@ -220,7 +239,7 @@ function App() {
             />
             <label
               htmlFor="file-upload"
-              className={`flex items-center px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 cursor-pointer transition-all shadow-md hover:shadow-lg font-bold text-xs tracking-wide uppercase transform hover:-translate-y-0.5 active:translate-y-0 ${
+              className={`flex items-center justify-center sm:justify-start w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 cursor-pointer transition-all shadow-md hover:shadow-lg font-bold text-xs tracking-wide uppercase transform hover:-translate-y-0.5 active:translate-y-0 ${
                 uploading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -231,7 +250,7 @@ function App() {
         </div>
 
         {/* File List */}
-        <div className="flex-1 p-6 overflow-y-auto bg-slate-50/50">
+        <div className="flex-1 p-4 md:p-6 overflow-y-auto bg-slate-50/50">
           {files.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-slate-400">
               <div className="p-8 bg-slate-100 rounded-full mb-6 shadow-inner animate-pulse">
@@ -241,16 +260,16 @@ function App() {
               <p className="text-xs text-slate-400 mt-2">Upload a file to get started</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
               {files.map((file, index) => (
                 <div
                   key={index}
                   className="group bg-white border border-slate-200 rounded-xl p-4 hover:shadow-xl transition-all hover:border-emerald-500 flex flex-col justify-between relative overflow-hidden duration-300"
                 >
-                  <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-200 group-hover:bg-emerald-500 transition-colors"></div>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-emerald-500 transition-colors"></div>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-slate-50 to-transparent rounded-bl-full -mr-8 -mt-8 group-hover:from-emerald-50 transition-colors"></div>
                   
-                  <div className="pl-4 mb-4 relative z-10">
+                  <div className="pl-3 mb-4 relative z-10">
                     <div className="flex items-start justify-between mb-3">
                       <div className="p-2.5 bg-slate-100 rounded-lg group-hover:bg-emerald-100 group-hover:text-emerald-700 transition-colors shadow-sm">
                         <FileText className="w-6 h-6 text-slate-500" />
@@ -285,13 +304,27 @@ function App() {
   );
 
   return (
-    <div className="flex h-screen bg-slate-100 font-sans text-slate-900">
+    <div className="flex h-screen bg-slate-100 font-sans text-slate-900 overflow-hidden">
+      {/* Mobile Sidebar Backdrop */}
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white transition-all duration-300 overflow-hidden flex flex-col shadow-2xl z-20 border-r border-slate-800 relative`}>
+      <div className={`${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-0 md:hidden'
+        } ${
+          isMobile ? 'fixed inset-y-0 left-0 w-72 shadow-2xl' : 'relative w-72'
+        } ${
+          !isMobile && !isSidebarOpen ? 'w-0' : ''
+        } bg-gradient-to-b from-slate-900 via-slate-950 to-black text-white transition-all duration-300 flex flex-col z-30 border-r border-slate-800`}>
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
         
-        <div className="h-24 flex items-center px-6 bg-slate-950/50 border-b border-slate-800 relative backdrop-blur-sm z-10">
+        <div className="h-24 flex items-center px-6 bg-slate-950/80 border-b border-slate-800 relative backdrop-blur-sm z-10">
           <div className="w-1.5 h-full bg-gradient-to-b from-amber-500 to-amber-600 absolute left-0 top-0 shadow-[0_0_15px_rgba(245,158,11,0.5)]"></div>
           <div>
             <h1 className="font-black text-2xl tracking-wider text-white drop-shadow-md">MSU-SND <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">ROTC</span></h1>
@@ -316,7 +349,7 @@ function App() {
                 onClick={() => setActiveSection(section.id)}
                 className={`w-full text-left px-4 py-3.5 flex items-center transition-all duration-300 rounded-xl group relative overflow-hidden ${
                   isActive 
-                    ? 'bg-gradient-to-r from-emerald-900/80 to-emerald-900/20 text-emerald-100 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)]' 
+                    ? 'bg-emerald-900/30 text-emerald-100 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)]' 
                     : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 border border-transparent'
                 }`}
               >
@@ -331,13 +364,13 @@ function App() {
           })}
         </nav>
         
-        <div className="p-4 bg-slate-950/80 border-t border-slate-800 relative z-10 backdrop-blur-md">
+        <div className="p-4 bg-black/40 border-t border-slate-800 relative z-10 backdrop-blur-md">
           <div className="flex items-center justify-center space-x-2 text-amber-500/80 mb-2">
             <Shield className="w-4 h-4" />
             <span className="text-[10px] font-mono tracking-widest font-bold">OFFICIAL USE ONLY</span>
           </div>
           <div className="text-[9px] text-center text-slate-600 font-mono">
-             SECURE CONNECTION ESTABLISHED
+            SECURE CONNECTION ESTABLISHED
           </div>
         </div>
       </div>
@@ -347,18 +380,18 @@ function App() {
         <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
         
         {/* Header */}
-        <header className="bg-white h-20 shadow-md px-8 flex items-center justify-between z-10 border-b border-slate-200 relative">
+        <header className="bg-white h-16 md:h-20 shadow-sm px-4 md:px-8 flex items-center justify-between z-10 border-b border-slate-200 relative">
           <div className="flex items-center">
             <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2.5 rounded-xl hover:bg-slate-100 mr-6 text-slate-500 focus:outline-none transition-colors border border-transparent hover:border-slate-200"
+              onClick={toggleSidebar}
+              className="p-2 md:p-2.5 rounded-xl hover:bg-slate-100 mr-3 md:mr-6 text-slate-500 focus:outline-none transition-colors border border-transparent hover:border-slate-200"
             >
-              {isSidebarOpen ? <Menu className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
+              {isSidebarOpen ? <Menu className="w-5 h-5 md:w-6 md:h-6" /> : <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />}
             </button>
             <div>
               <div className="flex items-center text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">
-                <span>System</span>
-                <ChevronRight className="w-3 h-3 mx-1 text-slate-300" />
+                <span className="hidden sm:inline">System</span>
+                <ChevronRight className="w-3 h-3 mx-1 text-slate-300 hidden sm:block" />
                 <span className="text-emerald-600">Secure</span>
                 <ChevronRight className="w-3 h-3 mx-1 text-slate-300" />
                 <span className="text-slate-500">Node-1</span>
